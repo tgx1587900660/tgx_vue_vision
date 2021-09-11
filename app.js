@@ -17,5 +17,8 @@ app.use(resDataMiddleware)
 
 // 3.监听端口 8888
 app.listen(8888, () => {
-    console.log('server is running at http://localhost:8888')
+    console.log('\n')
+    const tips = 'http://localhost:8888'
+    console.log(`server is running at: ${tips}`)
+    console.log('\n')
 })
