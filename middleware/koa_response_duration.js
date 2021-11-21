@@ -1,4 +1,5 @@
-/* 计算服务器消耗时长的中间件 */
+// 计算服务器消耗时长的中间件
+
 module.exports = async (ctx, next) => {
     // 获取请求开始的时间戳
     const start = Date.now()

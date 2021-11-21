@@ -1,4 +1,5 @@
-/* 设置响应头的中间件 */
+// 设置响应头的中间件
+
 module.exports = async (ctx, next) => {
     // ctx.set 设置请求耗时响应头 X-Response-Time
     const contentType = 'application/json; charset=utf-8'

@@ -1,6 +1,8 @@
-/* 读取 data 中的数据，并处理返回给前端的中间件 */
+// 读取 data 中的数据，并处理返回给前端的中间件
+
 const path = require('path')
 const fileUtils = require('../utils/file_utils')
+
 module.exports = async (ctx, next) => {
     // 获取文件路径
     let filePath = ctx.request.url // 得到请求路径： /api/seller

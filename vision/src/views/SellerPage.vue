@@ -1,4 +1,4 @@
-<!-- 针对 /seller-page 显示的组件 -->
+<!-- 针对路由 /seller-page 显示的组件 -->
 <template>
     <div class="com-page">
         <tgx-seller></tgx-seller>
@@ -9,9 +9,7 @@
 import TgxSeller from '@/components/Seller'
 export default {
     name: 'seller-page',
-    components: {
-        'tgx-seller': TgxSeller
-    },
+    components: { TgxSeller },
     props: {},
     data() {
         return {}

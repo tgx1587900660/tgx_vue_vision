@@ -14,8 +14,12 @@ Vue.prototype.$echarts = window.echarts
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/'
 Vue.prototype.$http = axios
 
-new Vue({
+// 创建 Vue 实例对象
+const app = new Vue({
     router,
     store,
     render: h => h(App)
-}).$mount('#app')
+})
+
+// 挂载 app
+app.$mount('#app')
