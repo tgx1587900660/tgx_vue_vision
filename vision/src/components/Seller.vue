@@ -1,9 +1,7 @@
 <!-- 横向柱状图组件 -->
 <template>
     <div class="com-container">
-        <div class="com-chart" ref="sellerRef">
-            tgx-seller
-        </div>
+        <div class="com-chart" ref="sellerRef"></div>
     </div>
 </template>
 
@@ -14,7 +12,26 @@ export default {
     props: {},
     data() {
         return {
+            // echarts 实例对象
             chartInstance: null,
+            // allData: [
+            //     { name: '商家1', value: 99 },
+            //     { name: '商家2', value: 102 },
+            //     { name: '商家3', value: 83 },
+            //     { name: '商家4', value: 49 },
+            //     { name: '商家5', value: 200 },
+            //     { name: '商家6', value: 152 },
+            //     { name: '商家7', value: 76 },
+            //     { name: '商家8', value: 23 },
+            //     { name: '商家9', value: 87 },
+            //     { name: '商家10', value: 223 },
+            //     { name: '商家11', value: 145 },
+            //     { name: '商家12', value: 187 },
+            //     { name: '商家13', value: 127 },
+            //     { name: '商家14', value: 57 },
+            //     { name: '商家15', value: 99 }
+            // ],
+            // 所有数据
             allData: [],
             // 当前页码
             currentPage: 1,
@@ -109,7 +126,10 @@ export default {
                 ]
             }
             this.chartInstance.setOption(initOption)
-
+            this.initInterval()
+        },
+        // 初始化定时器配置
+        initInterval() {
             // 鼠标进入, 取消定时器
             this.chartInstance.on('mouseover', () => {
                 clearInterval(this.timerId)
