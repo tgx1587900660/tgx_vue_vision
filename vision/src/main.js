@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import './assets/css/global.less'
+import './assets/font/iconfont.css'
 
 Vue.config.productionTip = false
 

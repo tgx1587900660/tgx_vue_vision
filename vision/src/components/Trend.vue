@@ -1,5 +1,14 @@
 <template>
     <div class="com-container">
+        <div class="title" :style="comStyle">
+            <span style="cursor: pointer;" @click="isSelectionShow = !isSelectionShow">{{ '| ' + currentTitle }}</span>
+            <span class="iconfont icon-arrow-down title-icon" :style="comStyle" @click="isSelectionShow = !isSelectionShow"></span>
+            <div class="select-list" :style="marginStyle" v-show="isSelectionShow">
+                <div class="select-item" v-for="item in selectList" :key="item.key" @click="handleClick(item.key)">
+                    {{ item.text }}
+                </div>
+            </div>
+        </div>
         <div class="com-chart" ref="trendRef"></div>
     </div>
 </template>
@@ -12,11 +21,41 @@ export default {
     props: {},
     data() {
         return {
+            // echart 实例
             chartInstance: null,
-            allData: []
+            // 所有数据
+            allData: {},
+            // 是否显示下拉框
+            isSelectionShow: false,
+            // 当前选中的图表类型
+            currentType: 'map',
+            // 自适应字号
+            titleFontSize: 0
         }
     },
-    computed: {},
+    computed: {
+        // 类型下拉列表
+        selectList() {
+            const typeList = this.allData.type
+            return (typeList && typeList.filter(item => item.key !== this.currentType)) || []
+        },
+        // 当前选中的类型
+        currentTitle() {
+            const type = this.allData[this.currentType]
+            return (type && type.title) || ''
+        },
+        // 标题样式
+        comStyle() {
+            return {
+                fontSize: this.titleFontSize + 'px'
+            }
+        },
+        marginStyle() {
+            return {
+                marginLeft: this.titleFontSize / 2 + 'px'
+            }
+        }
+    },
     watch: {},
     created() {},
     mounted() {
@@ -63,6 +102,7 @@ export default {
         async getData() {
             const { data: res } = await this.$http.get('trend')
             this.allData = res
+            console.log(res)
             this.updateChart()
         },
         // 更新数据
@@ -77,11 +117,11 @@ export default {
             const timeArr = this.allData.common.month
             // console.log(timeArr)
             // y 轴数据
-            const valueArr = this.allData.map.data
+            const valueArr = this.allData[this.currentType].data
             const seriesArr = valueArr.map((item, index) => ({
                 name: item.name,
                 type: 'line',
-                stack: 'map', // 堆叠图（5条数据值相同即可）
+                stack: this.currentType, // 堆叠图（5条数据值相同即可）
                 data: item.data,
                 areaStyle: {
                     color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -115,12 +155,50 @@ export default {
         },
         // 适应屏幕大小函数
         screenAdapter() {
-            const adapterOption = {}
+            this.titleFontSize = (this.$refs.trendRef.offsetWidth / 100) * 3.6
+            console.log(this.titleFontSize)
+            const adapterOption = {
+                legend: {
+                    itemWidth: this.titleFontSize,
+                    itemHeight: this.titleFontSize,
+                    itemGap: this.titleFontSize,
+                    textStyle: {
+                        fontSize: this.titleFontSize / 2
+                    }
+                }
+            }
             this.chartInstance.setOption(adapterOption)
             this.chartInstance.resize()
+        },
+        // 点击 下拉列表 时触发
+        handleClick(type) {
+            this.currentType = type
+            this.updateChart()
+            this.isSelectionShow = false
         }
     }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped>
+.title {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    z-index: 10;
+    color: #fff;
+    user-select: none;
+    .title-icon {
+        cursor: pointer;
+    }
+    .select-list {
+        cursor: pointer;
+        background-color: #222733;
+        .select-item {
+            &:hover {
+                opacity: 0.6;
+            }
+        }
+    }
+}
+</style>
