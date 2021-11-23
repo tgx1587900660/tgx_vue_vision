@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import SellerPage from '@/views/SellerPage'
-import TrendPage from '@/views/TrendPage'
+// import SellerPage from '@/views/SellerPage'
+// import TrendPage from '@/views/TrendPage'
+const SellerPage = () => import('@/views/SellerPage')
+const TrendPage = () => import('@/views/TrendPage')
 
 Vue.use(VueRouter)
 
