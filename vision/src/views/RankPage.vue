@@ -1,15 +1,15 @@
-<!-- 针对路由 /map-page 显示的组件 -->
+<!-- 针对路由 /rank-page 显示的组件 -->
 <template>
     <div class="com-page">
-        <tgx-map></tgx-map>
+        <tgx-rank-bar></tgx-rank-bar>
     </div>
 </template>
 
 <script>
-import TgxMap from '@/components/Map'
+import TgxRankBar from '@/components/Rank'
 export default {
-    name: 'map-page',
-    components: { TgxMap },
+    name: 'seller-page',
+    components: { TgxRankBar },
     props: {},
     data() {
         return {}

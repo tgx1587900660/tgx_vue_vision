@@ -4,6 +4,7 @@
             <router-link class="btn-item" :to="{ name: 'seller-page' }">柱状图 bar</router-link>
             <router-link class="btn-item" :to="{ name: 'trend-page' }">折线图 line</router-link>
             <router-link class="btn-item" :to="{ name: 'map-page' }">地图 map</router-link>
+            <router-link class="btn-item" :to="{ name: 'rank-page' }">柱状图 rank</router-link>
         </div>
     </div>
 </template>
