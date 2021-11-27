@@ -5,10 +5,20 @@ import VueRouter from 'vue-router'
 const SellerPage = () => import('@/views/SellerPage')
 const TrendPage = () => import('@/views/TrendPage')
 const MapPage = () => import('@/views/MapPage')
+const HomePage = () => import('@/views/Home')
 
 Vue.use(VueRouter)
 
 const routes = [
+    {
+        path: '/',
+        redirect: '/home'
+    },
+    {
+        path: '/home',
+        name: 'home',
+        component: HomePage
+    },
     {
         path: '/seller-page',
         name: 'seller-page',
