@@ -1,11 +1,12 @@
 <template>
-    <div class="com-container">
+    <div class="com-container" @dblclick="initMap">
         <div class="com-chart" ref="mapRef"></div>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { getProvinceMapInfo } from '@/utils/map_utils'
 export default {
     name: 'tgx-map',
     components: {},
@@ -14,7 +15,9 @@ export default {
     data() {
         return {
             chartInstance: null,
-            allData: []
+            allData: [],
+            // 用于缓存地图资源
+            cacheMapData: {}
         }
     },
     computed: {},
@@ -27,7 +30,6 @@ export default {
         this.screenAdapter()
     },
     beforeDestroy() {
-        console.log('销毁了')
         window.removeEventListener('resize', this.screenAdapter)
     },
     methods: {
@@ -65,12 +67,41 @@ export default {
                 }
             }
             this.chartInstance.setOption(initOption)
+            this.handleClickMap()
+        },
+        handleClickMap() {
+            this.chartInstance.on('click', async e => {
+                const provinceInfo = getProvinceMapInfo(e.name)
+                if (!provinceInfo.key) return console.log('未找到该地图资源')
+
+                if (!this.cacheMapData[provinceInfo.key]) {
+                    const res = await axios.get('http://localhost:8999' + provinceInfo.path)
+                    this.cacheMapData[provinceInfo.key] = res.data
+                    this.$echarts.registerMap(provinceInfo.key, res.data)
+                }
+
+                const changeOption = {
+                    geo: {
+                        map: provinceInfo.key
+                    }
+                }
+
+                this.chartInstance.setOption(changeOption)
+            })
+        },
+        // 双击图表时触发, 返回到中国地图
+        initMap() {
+            const initOption = {
+                geo: {
+                    map: 'china'
+                }
+            }
+            this.chartInstance.setOption(initOption)
         },
         // 获取数据
         async getData() {
             const { data } = await this.$http.get('map')
             this.allData = data
-            console.log(this.allData)
             this.updateChart()
         },
         // 更新数据
@@ -101,7 +132,23 @@ export default {
         },
         // 适应屏幕大小函数
         screenAdapter() {
-            const adapterOption = {}
+            const { mapRef } = this.$refs
+            const titleFontSize = (mapRef.offsetWidth / 100) * 3.6
+            const adapterOption = {
+                title: {
+                    textStyle: {
+                        fontSize: titleFontSize
+                    }
+                },
+                legend: {
+                    itemWidth: titleFontSize / 2,
+                    itemHeight: titleFontSize / 2,
+                    itemGap: titleFontSize,
+                    textStyle: {
+                        fontSize: titleFontSize / 2
+                    }
+                }
+            }
             this.chartInstance.setOption(adapterOption)
             this.chartInstance.resize()
         }
