@@ -5,6 +5,7 @@
             <router-link class="btn-item" :to="{ name: 'trend-page' }">折线图 line</router-link>
             <router-link class="btn-item" :to="{ name: 'map-page' }">地图 map</router-link>
             <router-link class="btn-item" :to="{ name: 'rank-page' }">柱状图 rank</router-link>
+            <router-link class="btn-item" :to="{ name: 'hot-page' }">饼图 pie</router-link>
         </div>
     </div>
 </template>

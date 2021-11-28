@@ -7,6 +7,7 @@ const SellerPage = () => import('@/views/SellerPage')
 const TrendPage = () => import('@/views/TrendPage')
 const MapPage = () => import('@/views/MapPage')
 const RankPage = () => import('@/views/RankPage')
+const HotPage = () => import('@/views/HotPage')
 
 Vue.use(VueRouter)
 
@@ -39,6 +40,11 @@ const routes = [
         path: '/rank-page',
         name: 'rank-page',
         component: RankPage
+    },
+    {
+        path: '/hot-page',
+        name: 'hot-page',
+        component: HotPage
     }
 ]
 
