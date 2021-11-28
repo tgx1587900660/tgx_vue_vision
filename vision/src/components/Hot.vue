@@ -127,7 +127,7 @@ export default {
         // 适应屏幕大小函数
         screenAdapter() {
             this.titleFontSize = (this.$refs.hotRef.offsetWidth / 100) * 3.6
-            console.log(this.titleFontSize)
+            // console.log(this.titleFontSize)
             const adapterOption = {
                 title: {
                     textStyle: {

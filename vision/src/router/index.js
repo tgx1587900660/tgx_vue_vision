@@ -8,6 +8,7 @@ const TrendPage = () => import('@/views/TrendPage')
 const MapPage = () => import('@/views/MapPage')
 const RankPage = () => import('@/views/RankPage')
 const HotPage = () => import('@/views/HotPage')
+const StockPage = () => import('@/views/StockPage')
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
         component: SellerPage
     },
     {
+        path: '/rank-page',
+        name: 'rank-page',
+        component: RankPage
+    },
+    {
         path: '/trend-page',
         name: 'trend-page',
         component: TrendPage
@@ -37,14 +43,14 @@ const routes = [
         component: MapPage
     },
     {
-        path: '/rank-page',
-        name: 'rank-page',
-        component: RankPage
-    },
-    {
         path: '/hot-page',
         name: 'hot-page',
         component: HotPage
+    },
+    {
+        path: '/stock-page',
+        name: 'stock-page',
+        component: StockPage
     }
 ]
 

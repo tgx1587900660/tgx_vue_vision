@@ -8,7 +8,7 @@
 <script>
 import TgxHotPie from '@/components/Hot'
 export default {
-    name: 'map-page',
+    name: 'hot-page',
     components: { TgxHotPie },
     props: {},
     data() {

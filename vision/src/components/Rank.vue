@@ -6,7 +6,7 @@
 
 <script>
 export default {
-    name: 'tgx-trend',
+    name: 'tgx-rank',
     components: {},
     filters: {},
     props: {},

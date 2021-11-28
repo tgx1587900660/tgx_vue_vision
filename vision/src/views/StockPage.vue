@@ -1,15 +1,15 @@
-<!-- 针对路由 /rank-page 显示的组件 -->
+<!-- 针对路由 /stock-page 显示的组件 -->
 <template>
     <div class="com-page">
-        <tgx-rank-bar></tgx-rank-bar>
+        <tgx-stock-pie></tgx-stock-pie>
     </div>
 </template>
 
 <script>
-import TgxRankBar from '@/components/Rank'
+import TgxStockPie from '@/components/Stock'
 export default {
-    name: 'rank-page',
-    components: { TgxRankBar },
+    name: 'stock-page',
+    components: { TgxStockPie },
     props: {},
     data() {
         return {}
