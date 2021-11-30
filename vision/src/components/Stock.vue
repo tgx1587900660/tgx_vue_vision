@@ -15,7 +15,9 @@ export default {
             chartInstance: null,
             allData: [],
             currentIndex: 0,
-            timerId: null
+            timerId: null,
+            innerRadius: 60,
+            outterRadius: 80
         }
     },
     computed: {},
@@ -36,8 +38,17 @@ export default {
         // 初始化 echarts 实例对象
         initChart() {
             this.chartInstance = this.$echarts.init(this.$refs.stockRef, 'chalk')
-            const initOption = {}
+            const initOption = {
+                title: {
+                    text: '| 库存和销量分析',
+                    left: 20,
+                    top: 20
+                }
+            }
             this.chartInstance.setOption(initOption)
+            this.initEvent()
+        },
+        initEvent() {
             this.chartInstance.on('mouseover', () => {
                 console.log('mouseover')
                 clearInterval(this.timerId)
@@ -79,7 +90,7 @@ export default {
             const showData = this.allData.slice(start, end)
             const seriesArr = showData.map((item, index) => ({
                 type: 'pie',
-                radius: [60, 80],
+                radius: [this.innerRadius, this.outterRadius],
                 center: centerArr[index],
                 hoverAnimation: false,
                 label: {
@@ -93,7 +104,7 @@ export default {
                 data: [
                     // 销量
                     {
-                        name: item.name,
+                        name: item.name + '\n' + item.sales,
                         value: item.sales,
                         itemStyle: {
                             color: new this.$echarts.graphic.LinearGradient(0, 1, 0, 0, [
@@ -118,7 +129,31 @@ export default {
         },
         // 适应屏幕大小函数
         screenAdapter() {
-            const adapterOption = {}
+            const titleFontSize = this.$refs.stockRef.offsetWidth / 100 * 3.6
+            const innerRadius = titleFontSize * 2
+            const outterRadius = innerRadius * 1.125
+            this.innerRadius = innerRadius
+            this.outterRadius = outterRadius
+
+            const seriesArr = []
+            for (let i = 0; i < 5; i++) {
+                seriesArr.push({
+                    type: 'pie',
+                    radius: [innerRadius, outterRadius],
+                    label: {
+                        fontSize: titleFontSize / 2
+                    }
+                })
+            }
+
+            const adapterOption = {
+                title: {
+                    textStyle: {
+                        fontSize: titleFontSize
+                    }
+                },
+                series: seriesArr
+            }
             this.chartInstance.setOption(adapterOption)
             this.chartInstance.resize()
         },
@@ -130,7 +165,8 @@ export default {
                     this.currentIndex = 0
                 }
                 this.updateChart() // 在更改完currentIndex之后 , 需要更新界面
-            }, 5000)
+                // this.screenAdapter()
+            }, 2000)
         }
     }
 }
