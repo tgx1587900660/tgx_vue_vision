@@ -19,6 +19,15 @@ export default class SocketService {
     // 存储 各个图表 的回调函数
     cbMapping = {}
 
+    // 连接成功的标识
+    connected = false
+
+    // 记录重试次数(用于重发延时优化)
+    sendRetryCount = 0
+
+    // 记录重连服务器次数(用于重连延时优化)
+    connectRetryCount = 0
+
     // 连接服务器的方法
     connect() {
         if (!window.WebSocket) {
@@ -29,11 +38,19 @@ export default class SocketService {
         // 连接成功的事件
         this.ws.onopen = () => {
             console.log('连接成功了......')
+            this.connected = true
+            this.connectRetryCount = 0
         }
 
-        // 连接失败的事件
+        // 连接失败的事件(可能第一次就失败; 也可能连接之后, 服务器断开了, 也会失败)
         this.ws.onclose = () => {
             console.log('连接失败了......')
+            this.connected = false
+            // 断开重连机制
+            this.connectRetryCount++
+            setTimeout(() => {
+                this.connect()
+            }, 500 * this.connectRetryCount)
         }
 
         // 得到服务端发送过来的数据
@@ -75,6 +92,14 @@ export default class SocketService {
      * data 是每个图表内发起的请求参数
      */
     send(data) {
-        this.ws.send(JSON.stringify(data))
+        if (this.connected) {
+            this.sendRetryCount = 0
+            this.ws.send(JSON.stringify(data))
+        } else {
+            this.sendRetryCount++
+            setTimeout(() => {
+                this.send(data)
+            }, 500 * this.sendRetryCount)
+        }
     }
 }
