@@ -57,16 +57,27 @@ export default {
         }
     },
     watch: {},
-    created() {},
+    created() {
+        // 注册组件的回调函数
+        this.$socket.registerCallback('trendData', this.getData)
+    },
     mounted() {
         this.initChart()
-        this.getData()
+        // this.getData() 获取数据时就是发送数据(即：发送请求参数)
+        this.$socket.send({
+            action: 'getData',
+            socketType: 'trendData',
+            chartName: 'trend',
+            value: ''
+        })
         window.addEventListener('resize', this.screenAdapter)
         this.screenAdapter()
     },
     beforeDestroy() {
         console.log('销毁了')
         window.removeEventListener('resize', this.screenAdapter)
+        // 销毁组件的回调函数
+        this.$socket.unRegisterCallback('trendData')
     },
     methods: {
         // 初始化 echarts 实例对象
@@ -98,9 +109,9 @@ export default {
             }
             this.chartInstance.setOption(initOption)
         },
-        // 获取数据
-        async getData() {
-            const { data: res } = await this.$http.get('trend')
+        // 这个方法会在 SokecktService 类中被调用(而 res 就是服务端发送过来的数据)
+        getData(res) {
+            // const { data: res } = await this.$http.get('trend')
             this.allData = res
             console.log(res)
             this.updateChart()

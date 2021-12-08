@@ -21,3 +21,6 @@ app.use(resDataMiddleware)
 app.listen(8888, () => {
     console.log(`server is running at: http://localhost:8888`)
 })
+
+const websocketServers = require('./servers/websocket_servers')
+websocketServers.listen()

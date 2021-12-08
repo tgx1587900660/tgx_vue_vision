@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div>
+            <button id="connect">连接</button>
+            <button id="send" disabled>发送数据</button> <br />
+            从后端接收的数据如下：<br />
+            <span id="recv"></span>
+        </div>
+        <script>
+            const connect = document.querySelector('#connect')
+            const send = document.querySelector('#send')
+            const recv = document.querySelector('#recv')
+
+            let ws
+            connect.onclick = () => {
+                // 对于前端来说, 浏览器 window 对象已经提供了 WebSocket 对象
+                ws = new WebSocket('ws://localhost:9998')
+                ws.onopen = () => {
+                    console.log('连接服务器成功了...')
+                    send.disabled = false
+                }
+
+                ws.onclose = () => {
+                    console.log('连接服务器失败了')
+                    send.disabled = true
+                }
+
+                ws.onmessage = msg => {
+                    console.log('接收到了服务器发来的数据：')
+                    // console.log(msg)
+                    recv.innerHTML = msg.data
+                }
+            }
+
+            send.onclick = () => {
+                const content = JSON.stringify({
+                    // 获取数据
+                    action: 'getData',
+                    // 图表回调函数的标识
+                    socketType: 'trendData',
+                    // 是 trend 图表
+                    chartName: 'trend',
+                    // 默认, true, false
+                    value: ''
+                })
+                ws.send(content)
+            }
+        </script>
+    </body>
+</html>
