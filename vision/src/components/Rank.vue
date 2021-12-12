@@ -40,7 +40,6 @@ export default {
         this.screenAdapter()
     },
     beforeDestroy() {
-        console.log('销毁了')
         window.removeEventListener('resize', this.screenAdapter)
         clearInterval(this.timerId)
         // 注册组件的回调函数
@@ -84,21 +83,17 @@ export default {
         // 定时器时机设置
         initMouseEnvent() {
             this.chartInstance.on('mouseover', () => {
-                console.log('mouseover')
                 clearInterval(this.timerId)
             })
             this.chartInstance.on('mouseout', () => {
-                console.log('mouseout')
                 this.startInterval()
             })
         },
         // 获取数据
         async getData(res) {
-            console.log(res)
             // const { data } = await this.$http.get('rank')
             res.sort((a, b) => b.value - a.value)
             this.allData = res
-            console.log(this.allData)
             this.updateChart()
             this.startInterval()
         },
@@ -111,8 +106,6 @@ export default {
             ]
             const valueArr = this.allData.map(item => item.value)
             const categoryArr = this.allData.map(item => item.name)
-            // console.log(valueArr)
-            // console.log(categoryArr)
             const dataOption = {
                 xAxis: {
                     data: categoryArr
@@ -128,7 +121,6 @@ export default {
                         itemStyle: {
                             color: e => {
                                 let tempColor = null
-                                // console.log(e)
                                 if (e.value > 300) {
                                     tempColor = colorArr[0]
                                 } else if (e.value > 200) {
@@ -157,7 +149,6 @@ export default {
         // 适应屏幕大小函数
         screenAdapter() {
             const titleFontSize = (this.$refs.rankRef.offsetWidth / 100) * 3.6
-            // console.log(titleFontSize)
             const adapterOption = {
                 title: {
                     textStyle: {

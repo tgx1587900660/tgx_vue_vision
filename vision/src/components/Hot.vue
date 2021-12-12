@@ -53,7 +53,6 @@ export default {
         this.screenAdapter()
     },
     beforeDestroy() {
-        console.log('销毁了')
         window.removeEventListener('resize', this.screenAdapter)
         // 销毁组件的回调函数
         this.$socket.unRegisterCallback('hotData')
@@ -108,10 +107,8 @@ export default {
         },
         // 获取数据
         async getData(res) {
-            console.log(res)
             // const { data } = await this.$http.get('hotproduct')
             this.allData = res
-            console.log(this.allData)
             this.updateChart()
         },
         // 更新数据
@@ -139,7 +136,6 @@ export default {
         // 适应屏幕大小函数
         screenAdapter() {
             this.titleFontSize = (this.$refs.hotRef.offsetWidth / 100) * 3.6
-            // console.log(this.titleFontSize)
             const adapterOption = {
                 title: {
                     textStyle: {
@@ -147,8 +143,8 @@ export default {
                     }
                 },
                 legend: {
-                    itemWidth: this.titleFontSize / 2,
-                    itemHeight: this.titleFontSize / 2,
+                    itemWidth: this.titleFontSize,
+                    itemHeight: this.titleFontSize,
                     itemGap: this.titleFontSize / 2,
                     textStyle: {
                         fontSize: this.titleFontSize / 2

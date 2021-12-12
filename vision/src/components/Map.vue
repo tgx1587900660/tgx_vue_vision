@@ -83,7 +83,7 @@ export default {
         handleClickMap() {
             this.chartInstance.on('click', async e => {
                 const provinceInfo = getProvinceMapInfo(e.name)
-                if (!provinceInfo.key) return console.log('未找到该地图资源')
+                if (!provinceInfo.key) return console.error('未找到该地图资源')
 
                 if (!this.cacheMapData[provinceInfo.key]) {
                     const res = await axios.get('http://localhost:8999' + provinceInfo.path)
@@ -112,7 +112,6 @@ export default {
         // 获取数据
         async getData(res) {
             // const { data } = await this.$http.get('map')
-            console.log(res)
             this.allData = res
             this.updateChart()
         },

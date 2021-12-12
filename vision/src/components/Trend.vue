@@ -74,7 +74,6 @@ export default {
         this.screenAdapter()
     },
     beforeDestroy() {
-        console.log('销毁了')
         window.removeEventListener('resize', this.screenAdapter)
         // 销毁组件的回调函数
         this.$socket.unRegisterCallback('trendData')
@@ -113,7 +112,6 @@ export default {
         getData(res) {
             // const { data: res } = await this.$http.get('trend')
             this.allData = res
-            console.log(res)
             this.updateChart()
         },
         // 更新数据
@@ -126,7 +124,6 @@ export default {
 
             // 月份, 类目轴
             const timeArr = this.allData.common.month
-            // console.log(timeArr)
             // y 轴数据
             const valueArr = this.allData[this.currentType].data
             const seriesArr = valueArr.map((item, index) => ({
@@ -147,12 +144,9 @@ export default {
                     ])
                 }
             }))
-            // console.log(seriesArr)
 
             // 图例数据
-            // console.log(valueArr)
             const legenArr = valueArr.map(item => item.name)
-            // console.log(legenArr)
             const dataOption = {
                 legend: {
                     data: legenArr
@@ -167,7 +161,6 @@ export default {
         // 适应屏幕大小函数
         screenAdapter() {
             this.titleFontSize = (this.$refs.trendRef.offsetWidth / 100) * 3.6
-            console.log(this.titleFontSize)
             const adapterOption = {
                 legend: {
                     itemWidth: this.titleFontSize,

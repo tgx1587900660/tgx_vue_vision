@@ -15,9 +15,7 @@ export default {
             chartInstance: null,
             allData: [],
             currentIndex: 0,
-            timerId: null,
-            innerRadius: 60,
-            outterRadius: 80
+            timerId: null
         }
     },
     computed: {},
@@ -39,7 +37,6 @@ export default {
         this.screenAdapter()
     },
     beforeDestroy() {
-        console.log('销毁了')
         window.removeEventListener('resize', this.screenAdapter)
         clearInterval(this.timerId)
         // 销毁组件的回调函数
@@ -61,17 +58,14 @@ export default {
         },
         initEvent() {
             this.chartInstance.on('mouseover', () => {
-                console.log('mouseover')
                 clearInterval(this.timerId)
             })
             this.chartInstance.on('mouseout', () => {
-                console.log('mouseout')
                 this.startInterval()
             })
         },
         // 获取数据
         async getData(res) {
-            console.log(res)
             // const { data } = await this.$http.get('stock')
             this.allData = res
             this.updateChart()
@@ -101,7 +95,6 @@ export default {
             const showData = this.allData.slice(start, end)
             const seriesArr = showData.map((item, index) => ({
                 type: 'pie',
-                radius: [this.innerRadius, this.outterRadius],
                 center: centerArr[index],
                 hoverAnimation: false,
                 label: {
@@ -115,7 +108,7 @@ export default {
                 data: [
                     // 销量
                     {
-                        name: item.name + '\n' + item.sales,
+                        name: item.name + '\n\n' + item.sales,
                         value: item.sales,
                         itemStyle: {
                             color: new this.$echarts.graphic.LinearGradient(0, 1, 0, 0, [
@@ -140,11 +133,9 @@ export default {
         },
         // 适应屏幕大小函数
         screenAdapter() {
-            const titleFontSize = this.$refs.stockRef.offsetWidth / 100 * 3.6
-            const innerRadius = titleFontSize * 2
-            const outterRadius = innerRadius * 1.125
-            this.innerRadius = innerRadius
-            this.outterRadius = outterRadius
+            const titleFontSize = (this.$refs.stockRef.offsetWidth / 100) * 3.6
+            const innerRadius = titleFontSize * 2.8
+            const outterRadius = innerRadius * 1.25
 
             const seriesArr = []
             for (let i = 0; i < 5; i++) {

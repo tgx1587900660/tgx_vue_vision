@@ -144,18 +144,15 @@ export default {
             // 鼠标进入, 取消定时器
             this.chartInstance.on('mouseover', () => {
                 clearInterval(this.timerId)
-                console.log('清除定时器')
             })
 
             // 鼠标离开, 开启定时器
             this.chartInstance.on('mouseout', () => {
                 this.startInterval()
-                console.log('开启定时器')
             })
         },
         // 获取图表数据
         async getData(res) {
-            console.log(res)
             // const { data: res } = await this.$http.get('seller')
             // 排序
             this.allData = res.sort((a, b) => a.value - b.value)
