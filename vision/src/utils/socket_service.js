@@ -46,7 +46,7 @@ export default class SocketService {
         this.ws.onclose = () => {
             console.log('连接失败了......')
             this.connected = false
-            // 断开重连机制
+            // 断开重连机制, 每次重连失败, 下次重连时间间隔增加
             this.connectRetryCount++
             setTimeout(() => {
                 this.connect()
@@ -75,7 +75,7 @@ export default class SocketService {
 
     /**
      * 注册回调函数
-     * socketType 是图表的类型
+     * socketType 是回调函数的标识
      * cb 是每个图表传进来的回调函数, 当它在该类中被调用时, 就可以把服务端获取的 WebSocket 数据传到对应的图表组件内
     */
     registerCallback(socketType, cb) {
@@ -96,6 +96,7 @@ export default class SocketService {
             this.sendRetryCount = 0
             this.ws.send(JSON.stringify(data))
         } else {
+            // 优化请求, 次数越多, 下次请求的时间越长
             this.sendRetryCount++
             setTimeout(() => {
                 this.send(data)

@@ -43,16 +43,27 @@ export default {
     },
     computed: {},
     watch: {},
-    created() {},
+    created() {
+        // 注册组件的回调函数
+        this.$socket.registerCallback('sellerData', this.getData)
+    },
     mounted() {
         this.initChart()
-        this.getData()
+        // this.getData()
+        this.$socket.send({
+            action: 'getData',
+            socketType: 'sellerData',
+            chartName: 'seller',
+            value: ''
+        })
         window.addEventListener('resize', this.screenAdapter)
         this.screenAdapter()
     },
     beforeDestroy() {
         clearInterval(this.timerId)
         window.removeEventListener('resize', this.screenAdapter)
+        // 销毁组件的回调函数
+        this.$socket.unRegisterCallback('sellerData')
     },
     methods: {
         // 初始化 echarts 实例对象
@@ -143,8 +154,9 @@ export default {
             })
         },
         // 获取图表数据
-        async getData() {
-            const { data: res } = await this.$http.get('seller')
+        async getData(res) {
+            console.log(res)
+            // const { data: res } = await this.$http.get('seller')
             // 排序
             this.allData = res.sort((a, b) => a.value - b.value)
             // 计算总页数

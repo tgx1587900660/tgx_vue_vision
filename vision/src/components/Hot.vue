@@ -36,16 +36,27 @@ export default {
         }
     },
     watch: {},
-    created() {},
+    created() {
+        // 注册组件的回调函数
+        this.$socket.registerCallback('hotData', this.getData)
+    },
     mounted() {
         this.initChart()
-        this.getData()
+        // this.getData()
+        this.$socket.send({
+            action: 'getData',
+            socketType: 'hotData',
+            chartName: 'hotproduct',
+            value: ''
+        })
         window.addEventListener('resize', this.screenAdapter)
         this.screenAdapter()
     },
     beforeDestroy() {
         console.log('销毁了')
         window.removeEventListener('resize', this.screenAdapter)
+        // 销毁组件的回调函数
+        this.$socket.unRegisterCallback('hotData')
     },
     methods: {
         // 初始化 echarts 实例对象
@@ -96,9 +107,10 @@ export default {
             this.chartInstance.setOption(initOption)
         },
         // 获取数据
-        async getData() {
-            const { data } = await this.$http.get('hotproduct')
-            this.allData = data
+        async getData(res) {
+            console.log(res)
+            // const { data } = await this.$http.get('hotproduct')
+            this.allData = res
             console.log(this.allData)
             this.updateChart()
         },

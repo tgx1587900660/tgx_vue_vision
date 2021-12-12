@@ -23,10 +23,19 @@ export default {
     },
     computed: {},
     watch: {},
-    created() {},
+    created() {
+        // 注册组件的回调函数
+        this.$socket.registerCallback('rankData', this.getData)
+    },
     mounted() {
         this.initChart()
-        this.getData()
+        // this.getData()
+        this.$socket.send({
+            action: 'getData',
+            socketType: 'rankData',
+            chartName: 'rank',
+            value: ''
+        })
         window.addEventListener('resize', this.screenAdapter)
         this.screenAdapter()
     },
@@ -34,6 +43,8 @@ export default {
         console.log('销毁了')
         window.removeEventListener('resize', this.screenAdapter)
         clearInterval(this.timerId)
+        // 注册组件的回调函数
+        this.$socket.unRegisterCallback('rankData')
     },
     methods: {
         // 初始化 echarts 实例对象
@@ -82,10 +93,11 @@ export default {
             })
         },
         // 获取数据
-        async getData() {
-            const { data } = await this.$http.get('rank')
-            data.sort((a, b) => b.value - a.value)
-            this.allData = data
+        async getData(res) {
+            console.log(res)
+            // const { data } = await this.$http.get('rank')
+            res.sort((a, b) => b.value - a.value)
+            this.allData = res
             console.log(this.allData)
             this.updateChart()
             this.startInterval()
