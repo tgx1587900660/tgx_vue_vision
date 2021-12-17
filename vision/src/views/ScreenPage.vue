@@ -98,15 +98,37 @@ export default {
             return {}
         }
     },
+    created() {
+        this.$socket.registerCallback('fullScreen', this.recvData)
+    },
+    beforeDestroy() {
+        this.$socket.unRegisterCallback('fullScreen')
+    },
     methods: {
-        handleChangeTheme() {},
         // 切换全屏大小
-        changeSize(type) {
-            console.log(type)
-            this.fullScreenStatus[type] = !this.fullScreenStatus[type]
-            this.$nextTick(() => {
-                this.$refs[type].screenAdapter()
+        changeSize(chartName) {
+            // this.fullScreenStatus[chartName] = !this.fullScreenStatus[chartName]
+            // this.$nextTick(() => {
+            //     this.$refs[chartName].screenAdapter()
+            // })
+            const targetValue = !this.fullScreenStatus[chartName]
+            this.$socket.send({
+                action: 'fullScreen',
+                socketType: 'fullScreen',
+                chartName: chartName,
+                value: targetValue
             })
+        },
+        // 接收数据的函数
+        recvData(data) {
+            console.log('data :>> ', data)
+            this.fullScreenStatus[data.chartName] = data.value
+            this.$nextTick(() => {
+                this.$refs[data.chartName].screenAdapter()
+            })
+        },
+        handleChangeTheme() {
+            this.$store.commit('changeTheme')
         }
     }
 }

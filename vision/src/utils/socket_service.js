@@ -59,15 +59,18 @@ export default class SocketService {
             // console.log(msg.data)
             const recvData = JSON.parse(msg.data)
             const { action, socketType, data } = recvData
-
             // 判断回调函数是否存在
             if (this.cbMapping[socketType]) {
                 if (action === 'getData') {
                     const realData = JSON.parse(data)
                     // 放入对应的图表中(realData就相当于前端请求时, 返回的数据)
                     this.cbMapping[socketType].call(this, realData)
-                } else if (action === 'fullscreen') {
+                } else if (action === 'fullScreen') {
+                    // 原封不动返回
+                    this.cbMapping[socketType].call(this, recvData)
                 } else if (action === 'themeChange') {
+                    // 原封不动返回
+                    this.cbMapping[socketType].call(this, recvData)
                 }
             }
         }

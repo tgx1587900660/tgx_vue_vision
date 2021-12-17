@@ -30,7 +30,7 @@ module.exports.listen = () => {
                 // 原封不动地转发 消息 给连接中的所有客户端
                 // wss.clients 是所有连接中的客户端
                 wss.clients.forEach((client) => {
-                    client.send(JSON.stringify(msg))
+                    client.send(JSON.stringify(payload))
                 })
             }
 
