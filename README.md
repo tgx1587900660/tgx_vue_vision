@@ -114,3 +114,5 @@ npm install
 npm run dev
 ```
 
+
+[点击查看效果图](https://gitee.com/tgx-1587900660/tgx_vue_vision/blob/master/show_charts.gif)
