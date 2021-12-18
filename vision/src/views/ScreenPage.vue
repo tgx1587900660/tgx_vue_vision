@@ -10,7 +10,7 @@
             <span class="title">电商平台实时监控系统</span>
             <div class="title-right">
                 <img :src="themeSrc" class="qiehuan" @click="handleChangeTheme" />
-                <span class="datetime">2049-01-01 00:00:00</span>
+                <span class="datetime">{{ currentTime }}</span>
             </div>
         </header>
         <div class="screen-body">
@@ -89,7 +89,9 @@ export default {
                 rank: false,
                 hot: false,
                 stock: false
-            }
+            },
+            currentTime: null,
+            timerId: null
         }
     },
     computed: {
@@ -113,12 +115,35 @@ export default {
     created() {
         this.$socket.registerCallback('fullScreen', this.recvData)
         this.$socket.registerCallback('themeChange', this.recvThemeChange)
+        // 先调用一次，防止短暂空白
+        this.currentTime = this.getCurrentTime()
+        this.startInterval()
     },
     beforeDestroy() {
         this.$socket.unRegisterCallback('fullScreen')
         this.$socket.unRegisterCallback('themeChange')
+        this.timerId && clearInterval(this.timerId)
     },
     methods: {
+        getCurrentTime() {
+            const dt = new Date()
+            const y = dt.getFullYear()
+            let m = dt.getMonth() + 1
+            m = m < 10 ? '0' + m : m
+            const d = dt.getDate()
+            let hh = dt.getHours()
+            hh = hh < 10 ? '0' + hh : hh
+            let mm = dt.getMinutes()
+            mm = mm < 10 ? '0' + mm : mm
+            let ss = dt.getSeconds()
+            ss = ss < 10 ? '0' + ss : ss
+            return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+        },
+        startInterval() {
+            this.timerId = setInterval(() => {
+                this.currentTime = this.getCurrentTime()
+            }, 1000)
+        },
         // 切换全屏大小
         changeSize(chartName) {
             // this.fullScreenStatus[chartName] = !this.fullScreenStatus[chartName]
