@@ -7,6 +7,7 @@
 <script>
 import axios from 'axios'
 import { getProvinceMapInfo } from '@/utils/map_utils'
+import { mapState } from 'vuex'
 export default {
     name: 'tgx-map',
     components: {},
@@ -20,8 +21,17 @@ export default {
             cacheMapData: {}
         }
     },
-    computed: {},
-    watch: {},
+    computed: {
+        ...mapState(['theme'])
+    },
+    watch: {
+        theme() {
+            this.chartInstance.dispose() // 销毁当前的图表
+            this.initChart() // 重新以最新的主题名称初始化图表对象
+            this.screenAdapter() // 完成屏幕的适配
+            this.updateChart() // 更新图表的展示
+        }
+    },
     created() {
         // 注册组件的回调函数
         this.$socket.registerCallback('mapData', this.getData)
@@ -46,14 +56,14 @@ export default {
     methods: {
         // 初始化 echarts 实例对象
         async initChart() {
-            this.chartInstance = this.$echarts.init(this.$refs.mapRef, 'chalk')
+            this.chartInstance = this.$echarts.init(this.$refs.mapRef, this.theme)
             // 本地数据, 直接请求前端地址即可
             const res = await axios.get('http://localhost:8999/static/map/china.json')
             // 注册并初始化地图
             this.$echarts.registerMap('china', res.data)
             const initOption = {
                 title: {
-                    text: '| 商家分布',
+                    text: '▎商家分布',
                     left: 20,
                     top: 20
                 },

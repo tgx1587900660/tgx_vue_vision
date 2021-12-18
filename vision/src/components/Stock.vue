@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
     name: 'tgx-stock',
     components: {},
@@ -18,8 +19,17 @@ export default {
             timerId: null
         }
     },
-    computed: {},
-    watch: {},
+    computed: {
+        ...mapState(['theme'])
+    },
+    watch: {
+        theme() {
+            this.chartInstance.dispose() // 销毁当前的图表
+            this.initChart() // 重新以最新的主题名称初始化图表对象
+            this.screenAdapter() // 完成屏幕的适配
+            this.updateChart() // 更新图表的展示
+        }
+    },
     created() {
         // 注册组件的回调函数
         this.$socket.registerCallback('stockData', this.getData)
@@ -45,10 +55,10 @@ export default {
     methods: {
         // 初始化 echarts 实例对象
         initChart() {
-            this.chartInstance = this.$echarts.init(this.$refs.stockRef, 'chalk')
+            this.chartInstance = this.$echarts.init(this.$refs.stockRef, this.theme)
             const initOption = {
                 title: {
-                    text: '| 库存和销量分析',
+                    text: '▎库存和销量分析',
                     left: 20,
                     top: 20
                 }

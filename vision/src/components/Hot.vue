@@ -9,6 +9,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { getThemeValue } from '@/utils/theme_utils'
 export default {
     name: 'tgx-hot-pie',
     components: {},
@@ -33,7 +34,8 @@ export default {
         },
         comStyle() {
             return {
-                fontSize: this.titleFontSize + 'px'
+                fontSize: this.titleFontSize + 'px',
+                color: getThemeValue(this.theme).titleColor
             }
         }
     },
@@ -72,12 +74,9 @@ export default {
             this.chartInstance = this.$echarts.init(this.$refs.hotRef, this.theme)
             const initOption = {
                 title: {
-                    text: '| 热销商品销售金额占比统计',
+                    text: '▎热销商品的占比',
                     left: 20,
-                    top: 20,
-                    textStyle: {
-                        color: '#ccc'
-                    }
+                    top: 20
                 },
                 legend: {
                     top: '15%',

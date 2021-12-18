@@ -1,7 +1,7 @@
 <template>
     <div class="com-container">
         <div class="title" :style="comStyle">
-            <span style="cursor: pointer;" @click="isSelectionShow = !isSelectionShow">{{ '| ' + currentTitle }}</span>
+            <span style="cursor: pointer;" @click="isSelectionShow = !isSelectionShow">{{ '▎' + currentTitle }}</span>
             <span class="iconfont icon-arrow-down title-icon" :style="comStyle" @click="isSelectionShow = !isSelectionShow"></span>
             <div class="select-list" :style="marginStyle" v-show="isSelectionShow">
                 <div class="select-item" v-for="item in selectList" :key="item.key" @click="handleClick(item.key)">
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { getThemeValue } from '@/utils/theme_utils'
 export default {
     name: 'tgx-trend',
     components: {},
@@ -34,6 +36,7 @@ export default {
         }
     },
     computed: {
+        ...mapState(['theme']),
         // 类型下拉列表
         selectList() {
             const typeList = this.allData.type
@@ -47,7 +50,8 @@ export default {
         // 标题样式
         comStyle() {
             return {
-                fontSize: this.titleFontSize + 'px'
+                fontSize: this.titleFontSize + 'px',
+                color: getThemeValue(this.theme).titleColor
             }
         },
         marginStyle() {
@@ -56,7 +60,14 @@ export default {
             }
         }
     },
-    watch: {},
+    watch: {
+        theme() {
+            this.chartInstance.dispose() // 销毁当前的图表
+            this.initChart() // 重新以最新的主题名称初始化图表对象
+            this.screenAdapter() // 完成屏幕的适配
+            this.updateChart() // 更新图表的展示
+        }
+    },
     created() {
         // 注册组件的回调函数
         this.$socket.registerCallback('trendData', this.getData)
@@ -81,7 +92,7 @@ export default {
     methods: {
         // 初始化 echarts 实例对象
         initChart() {
-            this.chartInstance = this.$echarts.init(this.$refs.trendRef, 'chalk')
+            this.chartInstance = this.$echarts.init(this.$refs.trendRef, this.theme)
             const initOption = {
                 grid: {
                     left: '3%',
@@ -188,7 +199,7 @@ export default {
 .title {
     position: absolute;
     left: 20px;
-    top: 0;
+    top: 20px;
     z-index: 10;
     color: #fff;
     user-select: none;
@@ -197,7 +208,6 @@ export default {
     }
     .select-list {
         cursor: pointer;
-        background-color: #222733;
         .select-item {
             &:hover {
                 opacity: 0.6;

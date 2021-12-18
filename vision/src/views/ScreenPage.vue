@@ -74,6 +74,8 @@ import TgxRank from '@/components/Rank.vue'
 import TgxSeller from '@/components/Seller.vue'
 import TgxStock from '@/components/Stock.vue'
 import TgxTrend from '@/components/Trend.vue'
+import { getThemeValue } from '@/utils/theme_utils'
+import { mapState } from 'vuex'
 export default {
     name: 'screen-page',
     components: { TgxHot, TgxMap, TgxRank, TgxSeller, TgxStock, TgxTrend },
@@ -87,22 +89,34 @@ export default {
                 rank: false,
                 hot: false,
                 stock: false
-            },
-            headerSrc: '',
-            logoSrc: '',
-            themeSrc: ''
+            }
         }
     },
     computed: {
+        ...mapState(['theme']),
         containerStyle() {
-            return {}
+            return {
+                backgroundColor: getThemeValue(this.theme).backgroundColor,
+                color: getThemeValue(this.theme).titleColor
+            }
+        },
+        headerSrc() {
+            return 'static/img/' + getThemeValue(this.theme).headerBorderSrc
+        },
+        logoSrc() {
+            return 'static/img/' + getThemeValue(this.theme).logoSrc
+        },
+        themeSrc() {
+            return 'static/img/' + getThemeValue(this.theme).themeSrc
         }
     },
     created() {
         this.$socket.registerCallback('fullScreen', this.recvData)
+        this.$socket.registerCallback('themeChange', this.recvThemeChange)
     },
     beforeDestroy() {
         this.$socket.unRegisterCallback('fullScreen')
+        this.$socket.unRegisterCallback('themeChange')
     },
     methods: {
         // 切换全屏大小
@@ -121,14 +135,25 @@ export default {
         },
         // 接收数据的函数
         recvData(data) {
-            console.log('data :>> ', data)
             this.fullScreenStatus[data.chartName] = data.value
             this.$nextTick(() => {
                 this.$refs[data.chartName].screenAdapter()
             })
         },
+        // 单个浏览器触发
         handleChangeTheme() {
-            this.$store.commit('changeTheme')
+            this.$socket.send({
+                action: 'themeChange',
+                socketType: 'themeChange',
+                chartName: '',
+                value: ''
+            })
+        },
+        // 多个浏览器做出回应
+        recvThemeChange(res) {
+            if (res.action === 'themeChange') {
+                this.$store.commit('changeTheme')
+            }
         }
     }
 }

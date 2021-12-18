@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
     name: 'tgx-rank',
     components: {},
@@ -21,8 +22,17 @@ export default {
             timerId: null
         }
     },
-    computed: {},
-    watch: {},
+    computed: {
+        ...mapState(['theme'])
+    },
+    watch: {
+        theme() {
+            this.chartInstance.dispose() // 销毁当前的图表
+            this.initChart() // 重新以最新的主题名称初始化图表对象
+            this.screenAdapter() // 完成屏幕的适配
+            this.updateChart() // 更新图表的展示
+        }
+    },
     created() {
         // 注册组件的回调函数
         this.$socket.registerCallback('rankData', this.getData)
@@ -48,10 +58,10 @@ export default {
     methods: {
         // 初始化 echarts 实例对象
         initChart() {
-            this.chartInstance = this.$echarts.init(this.$refs.rankRef, 'chalk')
+            this.chartInstance = this.$echarts.init(this.$refs.rankRef, this.theme)
             const initOption = {
                 title: {
-                    text: '| 地区销量排行',
+                    text: '▎地区销量排行',
                     left: 20,
                     top: 20
                 },
